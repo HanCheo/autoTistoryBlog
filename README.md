@@ -78,3 +78,10 @@ NAVER_PW_KOSDAQ = "NAVER_PW"
 NAVER_ID_KOSPI = "NAVER_ID"
 NAVER_PW_KOSPI = "NAVER_PW"
 ```
+
+
+
+# 개선점
+1. 데이터를 HTS에서 수동으로 가져오는 문제
+    - 증권사 API를 살펴볼 필요가 있음.
+    - Mac에서는 안되므로 Window 전환 필요
