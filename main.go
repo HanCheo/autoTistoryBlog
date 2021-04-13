@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	xj "github.com/basgys/goxml2json"
-	"github.com/hancheo/stockcode"
+
 	"github.com/hancheo/tistory/api"
 	"github.com/hancheo/tistory/common"
 	"github.com/hancheo/tistory/conn"
@@ -58,7 +58,6 @@ func main() {
 	e.GET("/", authLogin)
 	e.GET("/api", newContent)
 	e.GET("/api2", newContentMonthly)
-	e.GET("/insertcode", insertCode) // 종목코드 Insert
 
 	e.Logger.Fatal(e.Start(":1323"))
 
@@ -210,7 +209,6 @@ func newContent(c echo.Context) error {
 			tableHTML += api.DataToHTML(data)
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #006dd7'>순매도 종목</h1>"
 			tableHTML += api.DataToHTML(data2)
-
 		}
 		tableHTML += "</div>"
 	}
@@ -518,11 +516,5 @@ func stockDiscussionMonthly(url string) error {
 		}
 	}
 
-	return nil
-}
-
-//InsertCode 주식 종목 코드 및 이름 데이터 입력
-func insertCode(c echo.Context) error {
-	stockcode.InsertStockCode()
 	return nil
 }
