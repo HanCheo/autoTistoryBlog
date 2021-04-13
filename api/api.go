@@ -10,9 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hancheo/stockcode"
 	"github.com/hancheo/tistory/common"
-	"github.com/labstack/echo"
 )
 
 //ContentsStock make contents struct
@@ -264,10 +262,4 @@ func DataToHTML(datas []ContentsStock) string {
 	str += "</table></div>" //테이블 닫기
 
 	return str
-}
-
-//InsertCode 주식 종목 코드 및 이름 데이터 입력
-func InsertCode(c echo.Context) error {
-	stockcode.InsertStockCode()
-	return nil
 }
