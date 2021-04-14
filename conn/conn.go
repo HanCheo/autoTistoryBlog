@@ -5,15 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hancheo/tistory/common"
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 // DbConn connect postgres db
 func DbConn() (*sql.DB, error) {
-	err := godotenv.Load("../.env")
-	common.CheckErr(err)
 	var (
 		dbHost     string = os.Getenv("DB_HOST_dev")
 		dbPort     string = os.Getenv("DB_PORT_dev")

@@ -52,7 +52,7 @@ type tistory struct {
 }
 
 func main() {
-	godotenv.Load("../.env")
+	godotenv.Load(".env")
 
 	e := echo.New()
 	e.GET("/", authLogin)

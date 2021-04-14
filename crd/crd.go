@@ -12,7 +12,6 @@ import (
 	"github.com/chromedp/cdproto/target"
 	"github.com/chromedp/chromedp"
 	"github.com/hancheo/tistory/common"
-	"github.com/joho/godotenv"
 )
 
 func stringAddSlash(s string) string {
@@ -23,8 +22,6 @@ func stringAddSlash(s string) string {
 
 //WriteStockDiscussion 검색할 종목명, 글 제목, 글 내용 : 종토방 글 자동으로 작성하기
 func WriteStockDiscussion(stockType int, stockName, contentTitle, contentBody string) {
-	godotenv.Load("../.env")
-
 	var naver_ID, naver_PW string
 
 	if stockType < 2 {
@@ -109,7 +106,6 @@ func WriteStockDiscussion(stockType int, stockName, contentTitle, contentBody st
 }
 
 func RunLocalHost() {
-	godotenv.Load("../.env")
 
 	url := "https://www.tistory.com/oauth/authorize?client_id=" + os.Getenv("CLIENT_ID") + "&redirect_uri=" + os.Getenv("REDIRECT_URL") + "&response_type=code"
 
