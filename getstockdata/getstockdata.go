@@ -148,7 +148,7 @@ func getExcel(dateType, stockType string) []stockData {
 func insertStockCostData(stockType, dateType string, db *sql.DB) {
 	var sql, table string
 	var err error
-
+	var count int
 	datas := getExcel(dateType, stockType)
 
 	db.Exec("set search_path='" + dateType + "'")
@@ -158,8 +158,21 @@ func insertStockCostData(stockType, dateType string, db *sql.DB) {
 	} else {
 		table = "stock"
 	}
-	res, _ := db.Exec("Delete from " + table + "_craw where crawdate = \"" + datas[0].crawDate + "\";")
-	fmt.Println(res)
+	sql = ("select count(*) from " + table + "_craw where crawdate = '" + datas[0].crawDate + "';")
+	row := db.QueryRow(sql)
+	err = row.Scan(&count)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if count > 0 {
+		res, err := db.Exec("Delete from " + table + "_craw where crawdate = '" + datas[0].crawDate + "';")
+		fmt.Println(datas[0].crawDate+"날짜 데이터가 존재합니다. row를 삭제후 재입력 합니다. \r\n삭제수 :", res)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
 	sql = "insert into " + table + "_craw (crawdate, stockname, stocktype,personal, foreigner, institutional, financial, insurance, investment, bank, otherfinance, pension, privatefund, corporations) values "
 
 	for _, data := range datas {
@@ -182,6 +195,9 @@ func insertStockCostData(stockType, dateType string, db *sql.DB) {
 	}
 	sql = sql[:len(sql)-1]
 	sql += ";"
-	_, err = db.Exec(sql)
-	fmt.Println(err)
+	res, err := db.Exec(sql)
+	fmt.Println(res)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

@@ -57,6 +57,7 @@ func main() {
 	e := echo.New()
 	e.GET("/", authLogin)
 	e.GET("/api", newContent)
+	e.GET("/modify", modify)
 	e.GET("/api2", newContentMonthly)
 
 	e.Logger.Fatal(e.Start(":1323"))
@@ -111,7 +112,7 @@ func continueBuyDaily(c echo.Context) error {
 
 //글 수정
 func modify(c echo.Context) error {
-	// getstockdata.ExcelInsertToDB("daily")
+	getstockdata.ExcelInsertToDB("daily")
 	code := api.GetAccessToken(c.QueryParam("code"))
 	db, err := conn.DbConn()
 	common.CheckErr(err)
@@ -155,7 +156,7 @@ func modify(c echo.Context) error {
 
 	_, err1 := http.PostForm(tistoryContents, url.Values{
 		"access_token": {code},
-		"postId":       {"195"},
+		"postId":       {"203"},
 		"blogName":     {"hanch"},
 		"title":        {"2021년 " + monthDay[:2] + "월 " + monthDay[2:] + "일 개인,외국인,기관별 순매수/매도 상위 50 종목"},
 		"content":      {style.BasicTheme(tableHTML, "", "daily")},
