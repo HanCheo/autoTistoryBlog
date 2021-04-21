@@ -109,7 +109,6 @@ func continueBuyDaily(c echo.Context) error {
 }
 
 //코스피 코스닥 순서로 진행
-
 //글 수정
 func modify(c echo.Context) error {
 	getstockdata.ExcelInsertToDB("daily")
@@ -146,9 +145,9 @@ func modify(c echo.Context) error {
 			fmt.Println(s + " " + str3[idx-1] + " 상위 매수/매도 50 종목 가져오기 완료")
 			tableHTML += "<h3>" + str3[idx-1] + "_" + s + "<h3>"
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #ef5369;'>순매수 종목</h1>"
-			tableHTML += api.DataToHTML(data)
+			tableHTML += style.DataToHTML(data)
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #006dd7'>순매도 종목</h1>"
-			tableHTML += api.DataToHTML(data2)
+			tableHTML += style.DataToHTML(data2)
 
 		}
 		tableHTML += "</div>"
@@ -207,9 +206,9 @@ func newContent(c echo.Context) error {
 			fmt.Println(s + " " + str3[idx-1] + " 상위 매수/매도 50 종목 가져오기 완료")
 			tableHTML += "<h3>" + str3[idx-1] + "_" + s + "<h3>"
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #ef5369;'>순매수 종목</h1>"
-			tableHTML += api.DataToHTML(data)
+			tableHTML += style.DataToHTML(data)
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #006dd7'>순매도 종목</h1>"
-			tableHTML += api.DataToHTML(data2)
+			tableHTML += style.DataToHTML(data2)
 		}
 		tableHTML += "</div>"
 	}
@@ -280,9 +279,9 @@ func newContentMonthly(c echo.Context) error {
 			fmt.Println(s + " " + str3[idx-1] + " 상위 매수/매도 100 종목 가져오기 완료")
 			tableHTML += "<h3>" + str3[idx-1] + "_" + s + "<h3>"
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #ef5369;'>순매수 종목</h1>"
-			tableHTML += api.DataToHTML(data)
+			tableHTML += style.DataToHTML(data)
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #006dd7'>순매도 종목</h1>"
-			tableHTML += api.DataToHTML(data2)
+			tableHTML += style.DataToHTML(data2)
 
 		}
 		tableHTML += "</div>"

@@ -158,7 +158,7 @@ func insertStockCostData(stockType, dateType string, db *sql.DB) {
 	} else {
 		table = "stock"
 	}
-	sql = ("select count(*) from " + table + "_craw where crawdate = '" + datas[0].crawDate + "';")
+	sql = ("select count(*) from " + table + "_craw where stocktype = " + datas[0].stockType + " and crawdate = '" + datas[0].crawDate + "';")
 	row := db.QueryRow(sql)
 	err = row.Scan(&count)
 	if err != nil {

@@ -1,6 +1,9 @@
 package style
 
 import (
+	"strconv"
+
+	"github.com/hancheo/tistory/api"
 	"github.com/hancheo/tistory/common"
 )
 
@@ -195,5 +198,77 @@ func NavUl() string {
 	str += " <a onclick='changetab(10)' class='nav-link' id='corporations-tab'>기타법인</a>"
 	str += " </li>"
 	str += "     </ul>"
+	return str
+}
+
+// DataToHTML 데이터를 html 테이블 형태로 반환
+func DataToHTML(datas []api.ContentsStock) string {
+	var str, stockName string
+	var num1, num2, num3 int64
+	var href string
+	total := len(datas)
+
+	str += "<div style='font-size: 13px; display:flex; justify-content: space-around; flex-direction: row; flex-wrap: wrap;'>"
+	str += "<div style='width: 100%; font-size: 10px; text-align: left;'> (단위 = 금액: 백만원, 수량: 1주, 평균단가: 1원) </div>" // 테이블 주석
+	str += "<table class='stockTable'>"                                                                            // 테이블 시작
+	str += "<tr><th style='width:40px'>순위</th><th>종목명</th><th>금액</th><th>수량</th><th>평균단가</th></tr>"                //테이블 첫줄
+	// 두번째 테이블이 비어있는지 확인용
+	tableTrigger := false
+
+	// 1위부터 각 데이터 행으로 추가
+	for i := 0; i < total/2; i++ {
+		stockName = datas[i].StockName
+		num1, _ = strconv.ParseInt(datas[i].CostVolume, 10, 64)
+		num2, _ = strconv.ParseInt(datas[i].CountVolume, 10, 64)
+		num3, _ = strconv.ParseInt(datas[i].OneStock, 10, 64)
+		// if datas[i][0] == "" {
+		href = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=" + stockName + "#_cs_root"
+		// } else {
+		// 	href = "https://finance.naver.com/item/main.nhn?code=" + datas[i][0]
+		// }
+		if num1 == 0 && num2 == 0 && num3 == 0 {
+			str += "<tr class='noneDisplay'>"
+			tableTrigger = true
+		} else {
+			str += "<tr>"
+		}
+		str += "<td>" + strconv.Itoa(i+1) + "</td><td><a href='" + href + "' target='_blank'>" + stockName + "</a></td><td>" + common.Comma(num1) + "</td><td>" + common.Comma(num2) + "</td><td>" + common.Comma(num3) + "</td>"
+		str += "</tr>"
+	}
+	str += "</table>" //테이블 닫기
+
+	num1, _ = strconv.ParseInt(datas[total/2].CostVolume, 10, 64)
+	num2, _ = strconv.ParseInt(datas[total/2].CountVolume, 10, 64)
+	num3, _ = strconv.ParseInt(datas[total/2].OneStock, 10, 64)
+
+	if tableTrigger || (num1 == 0 && num2 == 0 && num3 == 0) {
+		str += "</div>"
+		return str
+	}
+
+	str += "<table class='stockTable'>"
+	str += "<tr class='secondTableHead'><th style='width:40px'>순위</th><th>종목명</th><th>금액</th><th>수량</th><th>평균단가</th></tr>" //테이블 첫줄
+
+	// 26, 50위부터 각 데이터 행으로 추가
+	for i := total / 2; i < total; i++ {
+		stockName = datas[i].StockName
+		num1, _ = strconv.ParseInt(datas[i].CostVolume, 10, 64)
+		num2, _ = strconv.ParseInt(datas[i].CountVolume, 10, 64)
+		num3, _ = strconv.ParseInt(datas[i].OneStock, 10, 64)
+		// if datas[i][0] == "" {
+		href = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=" + stockName + "#_cs_root"
+		// } else {
+		// 	// href = "https://finance.naver.com/item/main.nhn?code=" + datas[i][0]
+		// }
+		if num1 == 0 && num2 == 0 && num3 == 0 {
+			str += "<tr class='noneDisplay'>"
+		} else {
+			str += "<tr>"
+		}
+		str += "<td>" + strconv.Itoa(i+1) + "</td><td><a href='" + href + "' target='_blank'>" + stockName + "</a></td><td>" + common.Comma(num1) + "</td><td>" + common.Comma(num2) + "</td><td>" + common.Comma(num3) + "</td>"
+		str += "</tr>"
+	}
+	str += "</table></div>" //테이블 닫기
+
 	return str
 }
