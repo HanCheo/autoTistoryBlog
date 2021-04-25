@@ -10,39 +10,6 @@ import (
 	"github.com/hancheo/tistory/conn"
 )
 
-type stockData struct {
-	crawDate      string // 날짜
-	stockName     string // 종목명
-	stockType     string // 0 : kospi, 1 kosdaq
-	personal      string // 개인
-	foreigner     string // 외국인
-	institutional string // 기관계
-	financial     string // 금융투자
-	insurance     string // 보험
-	investment    string // 투신
-	bank          string // 은행
-	otherFinance  string // 기타금융
-	pension       string // 연기금등
-	privateFund   string // 사모펀드
-	corporations  string // 기타법인
-}
-
-type gStockData struct {
-	stockname   string
-	endcost     string
-	yesterday   string
-	fluctuate   string
-	transation  string
-	costvolume  string
-	gtransation string
-	gcostvolume string
-}
-
-type nameCode struct {
-	stockname string
-	code      string
-}
-
 //ExcelInsertToDB stock info insert to db
 func ExcelInsertToDB(dateType string) {
 	db, err := conn.DbConn()
@@ -103,16 +70,16 @@ func CodeNameExcel() {
 }
 
 //기관별, 외국인 매수/매도정보
-func getExcel(dateType, stockType string) []stockData {
+func getExcel(dateType, fileName string) []stockData {
 	var stockDatas []stockData
 	var crawdate, st string
-	crawdate = common.GetDateFormat("yyyy", "mm", "dd")
-	// crawdate = "2021" + stockType[:4]
-	file, err := excelize.OpenFile("./files/excel/" + dateType + "/" + stockType + ".xlsm")
-	fmt.Println(err)
-	fmt.Println(dateType + " " + stockType + "엑셀 가져오기 완료")
+	crawdate = common.GetDateFormat("yyyy", "", "") + fileName[:4]
 
-	if strings.Contains(stockType, "kosdaq") {
+	file, err := excelize.OpenFile("./files/excel/" + dateType + "/" + fileName + ".xlsm")
+	fmt.Println(err)
+	fmt.Println(dateType + " " + fileName + "엑셀 가져오기 완료")
+
+	if strings.Contains(fileName, "kosdaq") {
 		st = "1"
 	} else {
 		st = "0"
@@ -145,15 +112,15 @@ func getExcel(dateType, stockType string) []stockData {
 }
 
 //기관별, 외국인 매수/매도정보 입력
-func insertStockCostData(stockType, dateType string, db *sql.DB) {
+func insertStockCostData(fileName, dateType string, db *sql.DB) {
 	var sql, table string
 	var err error
 	var count int
-	datas := getExcel(dateType, stockType)
+	datas := getExcel(dateType, fileName)
 
 	db.Exec("set search_path='" + dateType + "'")
 
-	if stockType[len(stockType)-4:] == "cost" {
+	if fileName[len(fileName)-4:] == "cost" {
 		table = "cost"
 	} else {
 		table = "stock"

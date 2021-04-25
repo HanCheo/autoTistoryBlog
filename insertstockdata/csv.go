@@ -76,7 +76,8 @@ func CodeNameCsv() {
 func getCsv(dateType, fileName string) []stockData {
 	var stockDatas []stockData
 	var crawdate, st string
-	crawdate = "2021" + fileName[:4]
+	crawdate = common.GetDateFormat("yyyy", "", "") + fileName[:4]
+
 	file, err := os.Open("./files/csv/" + dateType + "/" + fileName + ".csv")
 	fmt.Println(err)
 	fmt.Println(dateType + " " + fileName + "CSV 가져오기 완료")
@@ -91,16 +92,16 @@ func getCsv(dateType, fileName string) []stockData {
 		st = "0"
 	}
 	for i, row := range rows {
+		// 두번째 줄까지 생략
+		if i <= 1 {
+			continue
+		}
 		row[0] = common.DecodeEUCKR(row[0])
 
 		for j, rowData := range row {
 			if rowData == "" {
 				row[j] = "0"
 			}
-		}
-
-		if i <= 1 {
-			continue
 		}
 		tmpCode := stockData{
 			crawDate:      crawdate,
