@@ -16,7 +16,7 @@ import (
 	"github.com/hancheo/tistory/common"
 	"github.com/hancheo/tistory/conn"
 	"github.com/hancheo/tistory/crd"
-	"github.com/hancheo/tistory/getstockdata"
+	"github.com/hancheo/tistory/insertstockdata"
 	"github.com/hancheo/tistory/style"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
@@ -53,11 +53,11 @@ type tistory struct {
 
 func main() {
 	godotenv.Load(".env")
-
 	e := echo.New()
 	e.GET("/", authLogin)
 	e.GET("/api", newContent)
 	e.GET("/modify", modify)
+	e.GET("/stockDiscussion", stockDiscussionApi)
 	e.GET("/api2", newContentMonthly)
 
 	e.Logger.Fatal(e.Start(":1323"))
@@ -111,7 +111,7 @@ func continueBuyDaily(c echo.Context) error {
 //코스피 코스닥 순서로 진행
 //글 수정
 func modify(c echo.Context) error {
-	getstockdata.ExcelInsertToDB("daily")
+	insertstockdata.CsvInsertToDB("daily")
 	code := api.GetAccessToken(c.QueryParam("code"))
 	db, err := conn.DbConn()
 	common.CheckErr(err)
@@ -171,8 +171,8 @@ func modify(c echo.Context) error {
 //일간 글 작성 (매수 상위 50종목)
 func newContent(c echo.Context) error {
 	// dkosdaqcost, dkosdaqstock, dkospicost, dkospistock
-	getstockdata.CodeNameExcel()
-	getstockdata.ExcelInsertToDB("daily")
+	insertstockdata.CodeNameCsv()
+	insertstockdata.CsvInsertToDB("daily")
 	fmt.Println("일간 데이터 입력 완료")
 	code := api.GetAccessToken(c.QueryParam("code"))
 	db, err := conn.DbConn()
@@ -245,7 +245,7 @@ func newContent(c echo.Context) error {
 //월간 글 작성 (매수 상위 100종목)
 func newContentMonthly(c echo.Context) error {
 	// dkosdaqcost, dkosdaqstock, dkospicost, dkospistock
-	getstockdata.ExcelInsertToDB("monthly")
+	insertstockdata.CsvInsertToDB("monthly")
 	fmt.Println("월간 데이터 입력 완료")
 	code := api.GetAccessToken(c.QueryParam("code"))
 	db, err := conn.DbConn()
@@ -315,6 +315,11 @@ func newContentMonthly(c echo.Context) error {
 	return c.String(http.StatusOK, code)
 }
 
+func stockDiscussionApi(c echo.Context) error {
+	stockDiscussion("")
+	return nil
+}
+
 //네이버 종목토론방 글 작성 (각 매수주체별 매매 상위 1등 종목에 한함.)
 func stockDiscussion(url string) error {
 	// stockName   string
@@ -330,7 +335,7 @@ func stockDiscussion(url string) error {
 	keys = common.GetStructKeys(m)
 	for idx := range str2 {
 		for i, s := range keys {
-			if i == 0 {
+			if i == 0 || idx == 0 {
 				continue
 			}
 			var tmpType writeData
@@ -343,7 +348,6 @@ func stockDiscussion(url string) error {
 				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", "", db)
 				tmp[1] = append(tmp[1], tmpType) // 코스피 s 매도 상위 1
 				fmt.Println("Append 1 : " + str3[i-1] + "코스피 매도")
-				continue
 			} else {
 				tmp[2] = append(tmp[2], tmpType) // 코스닥 s 매수 상위 1
 				fmt.Println("Append 2 : " + str3[i-1] + "코스닥 매수")
@@ -351,7 +355,6 @@ func stockDiscussion(url string) error {
 				tmp[3] = append(tmp[3], tmpType) // 코스닥 s 매도 상위 1
 				fmt.Println("Append 3 : " + str3[i-1] + "코스닥 매도")
 			}
-			fmt.Println(i)
 		}
 	}
 
