@@ -84,7 +84,7 @@ func continueBuyDaily(c echo.Context) error {
 	res, err := http.PostForm(tistoryContents, url.Values{
 		"access_token": {code},
 		"postId":       {"189"},
-		"blogName":     {"hanch"},
+		"blogName":     {os.Getenv("BLOG_NAME")},
 		"title":        {"개인,외국인,기관별 3일 이상 연속 순매수 종목"},
 		"content":      {"종목"},
 		"category":     {"465733"},
@@ -103,7 +103,7 @@ func continueBuyDaily(c echo.Context) error {
 
 	//Url
 	fmt.Println(e.Tistory.Url)
-	stockDiscussion(e.Tistory.Url)
+	stockDiscussion(e.Tistory.Url, common.GetDateFormat("", "mm", "dd"))
 
 	return nil
 }
@@ -156,9 +156,9 @@ func modify(c echo.Context) error {
 	_, err1 := http.PostForm(tistoryContents, url.Values{
 		"access_token": {code},
 		"postId":       {"203"},
-		"blogName":     {"hanch"},
+		"blogName":     {os.Getenv("BLOG_NAME")},
 		"title":        {"2021년 " + monthDay[:2] + "월 " + monthDay[2:] + "일 개인,외국인,기관별 순매수/매도 상위 50 종목"},
-		"content":      {style.BasicTheme(tableHTML, "", "daily")},
+		"content":      {style.BasicTheme(tableHTML, monthDay, "daily")},
 		"category":     {"465734"}, // monthly 465733
 		"visibility":   {"3"},
 		"tag":          {month + "월 주식, 기관별 주식, 주식매매현황, 기관주식, 외국인주식, 개인주식, 기관매수종목, 기관매도종목, 개인, 외국인, 기관종합, 금융투자, 보험, 투신, 은행, 기타금융, 연기금등, 사모펀드, 기타법인"},
@@ -201,8 +201,8 @@ func newContent(c echo.Context) error {
 			tableHTML += "<div class='tab'>"
 		}
 		for i, s := range str2 {
-			data := api.GetStockDataDaily(strconv.Itoa(i), k, "desc", "", db)
-			data2 := api.GetStockDataDaily(strconv.Itoa(i), k, "", "", db)
+			data := api.GetStockDataDaily(strconv.Itoa(i), k, "desc", monthDay, db)
+			data2 := api.GetStockDataDaily(strconv.Itoa(i), k, "", monthDay, db)
 			fmt.Println(s + " " + str3[idx-1] + " 상위 매수/매도 50 종목 가져오기 완료")
 			tableHTML += "<h3>" + str3[idx-1] + "_" + s + "<h3>"
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #ef5369;'>순매수 종목</h1>"
@@ -215,11 +215,11 @@ func newContent(c echo.Context) error {
 
 	resp2, err1 := http.PostForm(tistoryContents, url.Values{
 		"access_token": {code},
-		"blogName":     {"hanch"},
+		"blogName":     {os.Getenv("BLOG_NAME")},
 		"title":        {"2021년 " + monthDay[:2] + "월 " + monthDay[2:] + "일 개인,외국인,기관별 순매수/매도 상위 50 종목"},
-		"content":      {style.BasicTheme(tableHTML, "", "daily")},
+		"content":      {style.BasicTheme(tableHTML, monthDay, "daily")},
 		"category":     {"465734"}, // monthly 465733
-		"visibility":   {"3"},
+		"visibility":   {"3"},      // 0: 비공개 1: 보호글 3: 공개글
 		"tag":          {month + "월 주식, 기관별 주식, 주식매매현황, 기관주식, 외국인주식, 개인주식, 기관매수종목, 기관매도종목, 개인, 외국인, 기관종합, 금융투자, 보험, 투신, 은행, 기타금융, 연기금등, 사모펀드, 기타법인"},
 	})
 
@@ -237,7 +237,7 @@ func newContent(c echo.Context) error {
 
 	//Url
 	fmt.Println(e.Tistory.Url)
-	stockDiscussion(e.Tistory.Url)
+	stockDiscussion(e.Tistory.Url, monthDay)
 
 	return c.String(http.StatusOK, code)
 }
@@ -274,8 +274,8 @@ func newContentMonthly(c echo.Context) error {
 			tableHTML += "<div class='tab'>"
 		}
 		for i, s := range str2 {
-			data := api.GetStockDataMonthly(strconv.Itoa(i), k, "desc", "", db)
-			data2 := api.GetStockDataMonthly(strconv.Itoa(i), k, "", "", db)
+			data := api.GetStockDataMonthly(strconv.Itoa(i), k, "desc", monthDay, db)
+			data2 := api.GetStockDataMonthly(strconv.Itoa(i), k, "", monthDay, db)
 			fmt.Println(s + " " + str3[idx-1] + " 상위 매수/매도 100 종목 가져오기 완료")
 			tableHTML += "<h3>" + str3[idx-1] + "_" + s + "<h3>"
 			tableHTML += "<h1 style='font-weight: bold; text-aling:center; color: #ef5369;'>순매수 종목</h1>"
@@ -289,9 +289,9 @@ func newContentMonthly(c echo.Context) error {
 
 	resp2, err1 := http.PostForm(tistoryContents, url.Values{
 		"access_token": {code},
-		"blogName":     {"hanch"},
+		"blogName":     {os.Getenv("BLOG_NAME")},
 		"title":        {"2021년 " + monthDay[:2] + "월 개인,외국인,기관별 순매수/매도 상위 100 종목"},
-		"content":      {style.BasicTheme(tableHTML, "", "monthly")},
+		"content":      {style.BasicTheme(tableHTML, monthDay, "monthly")},
 		"category":     {"465733"},
 		"visibility":   {"3"},
 		"tag":          {month + "월 주식, 기관별 주식, 주식매매현황, 기관주식, 외국인주식, 개인주식, 기관매수종목, 기관매도종목, 개인, 외국인, 기관종합, 금융투자, 보험, 투신, 은행, 기타금융, 연기금등, 사모펀드, 기타법인"},
@@ -316,12 +316,12 @@ func newContentMonthly(c echo.Context) error {
 }
 
 func stockDiscussionApi(c echo.Context) error {
-	stockDiscussion("")
+	stockDiscussion("", common.GetDateFormat("", "mm", "dd"))
 	return nil
 }
 
 //네이버 종목토론방 글 작성 (각 매수주체별 매매 상위 1등 종목에 한함.)
-func stockDiscussion(url string) error {
+func stockDiscussion(url, monthDay string) error {
 	// stockName   string
 	db, err := conn.DbConn()
 	common.CheckErr(err)
@@ -339,19 +339,19 @@ func stockDiscussion(url string) error {
 				continue
 			}
 			var tmpType writeData
-			tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "desc", "", db)
+			tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "desc", monthDay, db)
 			tmpType.buyType = str3[i-1]
 
 			if idx == 0 {
 				tmp[0] = append(tmp[0], tmpType) // 코스피 s 매수 상위 1
 				fmt.Println("Append 0 : " + str3[i-1] + " 코스피 매수")
-				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", "", db)
+				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", monthDay, db)
 				tmp[1] = append(tmp[1], tmpType) // 코스피 s 매도 상위 1
 				fmt.Println("Append 1 : " + str3[i-1] + "코스피 매도")
 			} else {
 				tmp[2] = append(tmp[2], tmpType) // 코스닥 s 매수 상위 1
 				fmt.Println("Append 2 : " + str3[i-1] + "코스닥 매수")
-				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", "", db)
+				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", monthDay, db)
 				tmp[3] = append(tmp[3], tmpType) // 코스닥 s 매도 상위 1
 				fmt.Println("Append 3 : " + str3[i-1] + "코스닥 매도")
 			}
@@ -411,7 +411,7 @@ func stockDiscussion(url string) error {
 				}
 			}
 			content += `\n\n금일 각 매수주체별 상위 50종목 매매 정보 블로그\n`
-			content += `hanch.tistory.com`
+			content += os.Getenv("BLOG_URL")
 			crd.WriteStockDiscussion(i, sN, title, content)
 			fmt.Println(title)
 		}
@@ -421,7 +421,7 @@ func stockDiscussion(url string) error {
 }
 
 //네이버 종목토론방 월간 글 작성 (각 매수주체별 매매 상위 1등 종목에 한함.)
-func stockDiscussionMonthly(url string) error {
+func stockDiscussionMonthly(url, tmpDate string) error {
 	// stockName   string
 	db, err := conn.DbConn()
 	common.CheckErr(err)
@@ -439,20 +439,20 @@ func stockDiscussionMonthly(url string) error {
 				continue
 			}
 			var tmpType writeData
-			tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "desc", "", db)
+			tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "desc", tmpDate, db)
 			tmpType.buyType = str3[i-1]
 
 			if idx == 0 {
 				tmp[0] = append(tmp[0], tmpType) // 코스피 s 매수 상위 1
 				fmt.Println("Append 0 : 코스피 매수")
-				tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "", "", db)
+				tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "", tmpDate, db)
 				tmpType.buyType = str3[i-1]
 				tmp[1] = append(tmp[1], tmpType) // 코스피 s 매도 상위 1
 				fmt.Println("Append 1 : 코스피 매도")
 			} else {
 				tmp[2] = append(tmp[2], tmpType) // 코스닥 s 매수 상위 1
 				fmt.Println("Append 2 : 코스닥 매수")
-				tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "", "", db)
+				tmpType.topData = api.GetTopDataMonthly(strconv.Itoa(idx), s, "", tmpDate, db)
 				tmpType.buyType = str3[i-1]
 				tmp[3] = append(tmp[3], tmpType) // 코스닥 s 매도 상위 1
 				fmt.Println("Append 3 : 코스닥 매도")

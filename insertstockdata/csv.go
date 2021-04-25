@@ -26,7 +26,7 @@ func CsvInsertToDB(dateType string) {
 	var str []string = []string{date + "kospicost", date + "kosdaqcost", date + "kospistock", date + "kosdaqstock"}
 
 	for _, s := range str {
-		insertStockCostData(s, dateType, db)
+		insertStockCostDataCsv(s, dateType, db)
 	}
 }
 
@@ -35,17 +35,18 @@ func CodeNameCsv() {
 	var insertDatas []nameCode
 	file, err := os.Open("./files/csv/code_name.csv")
 	fmt.Println(err)
-	fmt.Println("code_name 엑셀 가져오기 완료")
 
 	rdr := csv.NewReader(bufio.NewReader(file))
 	// rdr.Comma = ';'
 	// rdr.Comment = '#'
 	rows, _ := rdr.ReadAll()
+	fmt.Println("code_name CSV 가져오기 완료")
 
 	for i, row := range rows {
 		if i == 0 || row[0] == "" || row[1] == "" || row[0] == "'043500" {
 			continue
 		}
+		row[1] = common.DecodeEUCKR(row[1])
 		stockcode := strings.ReplaceAll(row[0], "'", "")
 		exist, _ := common.InArray(nameCode{code: stockcode, stockname: row[1]}, insertDatas)
 		if exist {
@@ -75,11 +76,10 @@ func CodeNameCsv() {
 func getCsv(dateType, fileName string) []stockData {
 	var stockDatas []stockData
 	var crawdate, st string
-	crawdate = common.GetDateFormat("yyyy", "mm", "dd")
-	// crawdate = "2021" + stockType[:4]
+	crawdate = "2021" + fileName[:4]
 	file, err := os.Open("./files/csv/" + dateType + "/" + fileName + ".csv")
 	fmt.Println(err)
-	fmt.Println(dateType + " " + fileName + "csv 가져오기 완료")
+	fmt.Println(dateType + " " + fileName + "CSV 가져오기 완료")
 
 	rdr := csv.NewReader(bufio.NewReader(file))
 	// rdr.Comma = ';'
@@ -120,7 +120,6 @@ func getCsv(dateType, fileName string) []stockData {
 		}
 		stockDatas = append(stockDatas, tmpCode)
 	}
-	fmt.Println(stockDatas)
 	return stockDatas
 }
 

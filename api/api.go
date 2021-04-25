@@ -38,11 +38,8 @@ func GetAccessToken(code string) string {
 func GetStockDataDaily(table, buyType, order, modifyDate string, db *sql.DB) []ContentsStock {
 	var sql, date string
 
-	if modifyDate == "" {
-		date = common.GetDateFormat("yyyy", "mm", "dd")
-	} else {
-		date = "2021" + modifyDate
-	}
+	date = common.GetDateFormat("yyyy", "", "") + modifyDate
+
 	//검색
 	sql = "select a.stockname, a." + buyType + ", b." + buyType + ", " +
 		"case " +
@@ -67,7 +64,7 @@ func GetStockDataDaily(table, buyType, order, modifyDate string, db *sql.DB) []C
 		returnData = append(returnData, row)
 	}
 	if count == 0 {
-		log.Fatal(errors.New("ROW가 0개 입니다"))
+		log.Fatal(errors.New(date + "ROW가 0개 입니다"))
 	}
 
 	return returnData
@@ -77,11 +74,8 @@ func GetStockDataDaily(table, buyType, order, modifyDate string, db *sql.DB) []C
 func GetStockDataMonthly(table, buyType, order, modifyDate string, db *sql.DB) []ContentsStock {
 	var sql, date string
 
-	if modifyDate == "" {
-		date = common.GetDateFormat("yyyy", "mm", "dd")
-	} else {
-		date = "2021" + modifyDate
-	}
+	date = common.GetDateFormat("yyyy", "", "") + modifyDate
+
 	//검색
 	sql = "select a.stockname, a." + buyType + ", b." + buyType + ", " +
 		"case " +
@@ -116,11 +110,8 @@ func GetStockDataMonthly(table, buyType, order, modifyDate string, db *sql.DB) [
 func GetTopDataDaily(table, buyType, order, tmpDate string, db *sql.DB) ContentsStock {
 	var sql, date string
 
-	if tmpDate == "" {
-		date = common.GetDateFormat("yyyy", "mm", "dd")
-	} else {
-		date = "2021" + tmpDate
-	}
+	date = common.GetDateFormat("yyyy", "", "") + tmpDate
+
 	sql = "select a.stockname, a." + buyType + ", b." + buyType + ", " +
 		"case " +
 		"when ABS(b." + buyType + ") > 0 " +
@@ -154,11 +145,8 @@ func GetTopDataDaily(table, buyType, order, tmpDate string, db *sql.DB) Contents
 func GetTopDataMonthly(table, buyType, order, tmpDate string, db *sql.DB) ContentsStock {
 	var sql, date string
 
-	if tmpDate == "" {
-		date = common.GetDateFormat("yyyy", "mm", "dd")
-	} else {
-		date = "2021" + tmpDate
-	}
+	date = common.GetDateFormat("yyyy", "", "") + tmpDate
+
 	sql = "select a.stockname, a." + buyType + ", b." + buyType + ", " +
 		"case " +
 		"when ABS(b." + buyType + ") > 0 " +

@@ -110,16 +110,9 @@ func style() string {
 
 //HeaderGuideText 머리글
 func headerGuideText(modifyDate string) string {
-	var date string
-	if modifyDate == "" {
-		date = common.GetDateFormat("", "mm", "dd")
-	} else {
-		date = modifyDate
-	}
-
 	str := "<div style='text-align:center'> <img src='https://tistory3.daumcdn.net/tistory/3508113/skin/images/unnamed.jpg' /></div>"
 	str += "<br><blockquote style='font-size: 13px; padding: 21px 25px !important' data-ke-style='style3'>" +
-		"<h2 style='display: flex; margin-top:0; padding-top:0'>참고사항 <span style='font-size: 10px'>" + date + " 일자</span>" +
+		"<h2 style='display: flex; margin-top:0; padding-top:0'>참고사항 <span style='font-size: 10px'>" + modifyDate + " 일자</span>" +
 		"<button class='toggleBtn' style='margin-left:auto; font-size:11px' onclick='toggleCategory()'>확대/축소</button></h2>" +
 		"<strong style='color: #ff1d1d'>이글은 주식장이 열리는날 7시 이전으로 자동생성 되는 글입니다. 구독해주시면 알림이 가요 !</strong><br>" +
 		"1. 각 종목명을 클릭시 자동으로 네이버 검색으로 페이지가 넘어가져요 !<br>" +
@@ -133,16 +126,9 @@ func headerGuideText(modifyDate string) string {
 }
 
 func headerGuideTextMonthly(modifyDate string) string {
-	var date string
-	if modifyDate == "" {
-		date = common.GetDateFormat("", "mm", "dd")
-	} else {
-		date = modifyDate
-	}
-
 	str := "<div style='text-align:center'> <img src='https://tistory3.daumcdn.net/tistory/3508113/skin/images/unnamed.jpg' /></div>"
 	str += "<br><blockquote style='font-size: 13px; padding: 21px 25px !important' data-ke-style='style3'>" +
-		"<h2 style='display: flex; margin-top:0; padding-top:0'>참고사항 <span style='font-size: 10px'>" + date + " 일자</span>" +
+		"<h2 style='display: flex; margin-top:0; padding-top:0'>참고사항 <span style='font-size: 10px'>" + modifyDate + " 일자</span>" +
 		"<button class='toggleBtn' style='margin-left:auto; font-size:11px' onclick='toggleCategory()'>확대/축소</button></h2>" +
 		"<strong style='color: #ff1d1d'>이글은 매월 말일 7시 이전으로 자동생성 되는 글입니다. 구독해주시면 알림이 가요 !</strong><br>" +
 		"1. 각 종목명을 클릭시 자동으로 네이버 검색으로 페이지가 넘어가져요 !<br>" +
