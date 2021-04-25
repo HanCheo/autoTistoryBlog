@@ -11,7 +11,6 @@
 ## Used
 
 <center>
-
  ![Postgresql](https://img.shields.io/badge/-Postgresql-336791?logo=Postgresql)
  ![Go](https://img.shields.io/badge/-Go-00ADD8?logo=GO)
  ![CSS](https://img.shields.io/badge/-CSS-1572B6?logo=CSS3)
@@ -20,9 +19,11 @@
 ## Dependencies
 ```go
 import {
-//로컬 서버
+//Using local sever
 	"github.com/labstack/echo" 
-//크롬드라이버
+//Using PostgreSQL
+    "github.com/lib/pq"
+//Chrome Driver
 	"github.com/chromedp/cdproto/cdp" 
 	"github.com/chromedp/cdproto/target"
 	"github.com/chromedp/chromedp"
@@ -46,11 +47,11 @@ import {
 
 
 ## Write Process
-    1) HTS 엑셀 데이터 추출
-    2) 사명이 변경된 종목 업데이트
-    3) 당일 매매정보 입력
+    1) HTS CSV 데이터 추출
+    2) 사명이 변경된 종목 DB 업데이트
+    3) 당일 매매정보 DB 입력
     4) 상위 50종목 조회
-    5) 데이터 table 형태로 변경
+    5) 데이터 html table 형태로 변경
     6) 글 작성
     7) 각 주체별 상위 1등 종목 조회
     8) 크롬드라이버를 이용하여 네이버 종목토론방 정보 글 작성
@@ -83,5 +84,7 @@ NAVER_PW_KOSPI = "NAVER_PW"
 
 # 개선점
 1. 데이터를 HTS에서 수동으로 가져오는 문제
-    - 증권사 API를 살펴볼 필요가 있음.
-    - Mac에서는 안되므로 Window 전환 필요
+    - [ ] 증권사 API를 살펴볼 필요가 있음.
+    - [ ] Mac에서는 안되므로 Window 전환 필요
+2. 기존 CSV형태로 가져오게 되어있는데 excel로 데이터 전처리를 해야하는 문제.
+    - [x] csv파일을 읽는 형태로 변환 필요 
