@@ -76,7 +76,12 @@ func CodeNameCsv() {
 func getCsv(dateType, fileName string) []stockData {
 	var stockDatas []stockData
 	var crawdate, st string
-	crawdate = common.GetDateFormat("yyyy", "", "") + fileName[:4]
+
+	if dateType == "daily" {
+		crawdate = common.GetDateFormat("yyyy", "", "") + fileName[:4]
+	} else {
+		crawdate = common.GetDateFormat("yyyy", "mm", "dd")
+	}
 
 	file, err := os.Open("./files/csv/" + dateType + "/" + fileName + ".csv")
 	fmt.Println(err)

@@ -310,13 +310,13 @@ func newContentMonthly(c echo.Context) error {
 	json.Unmarshal([]byte(js.String()), &e)
 
 	fmt.Println(e.Tistory.Url)
-	// stockDiscussion(e.Tistory.Url)
+	stockDiscussionMonthly(e.Tistory.Url, monthDay)
 
 	return c.String(http.StatusOK, code)
 }
 
 func stockDiscussionApi(c echo.Context) error {
-	stockDiscussion("", common.GetDateFormat("", "mm", "dd"))
+	stockDiscussionMonthly(os.Getenv("BLOG_URL"), common.GetDateFormat("", "mm", "dd"))
 	return nil
 }
 
@@ -335,7 +335,7 @@ func stockDiscussion(url, monthDay string) error {
 	keys = common.GetStructKeys(m)
 	for idx := range str2 {
 		for i, s := range keys {
-			if i == 0 || idx == 0 {
+			if i == 0 {
 				continue
 			}
 			var tmpType writeData
@@ -347,13 +347,13 @@ func stockDiscussion(url, monthDay string) error {
 				fmt.Println("Append 0 : " + str3[i-1] + " 코스피 매수")
 				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", monthDay, db)
 				tmp[1] = append(tmp[1], tmpType) // 코스피 s 매도 상위 1
-				fmt.Println("Append 1 : " + str3[i-1] + "코스피 매도")
+				fmt.Println("Append 1 : " + str3[i-1] + " 코스피 매도")
 			} else {
 				tmp[2] = append(tmp[2], tmpType) // 코스닥 s 매수 상위 1
-				fmt.Println("Append 2 : " + str3[i-1] + "코스닥 매수")
+				fmt.Println("Append 2 : " + str3[i-1] + " 코스닥 매수")
 				tmpType.topData = api.GetTopDataDaily(strconv.Itoa(idx), s, "", monthDay, db)
 				tmp[3] = append(tmp[3], tmpType) // 코스닥 s 매도 상위 1
-				fmt.Println("Append 3 : " + str3[i-1] + "코스닥 매도")
+				fmt.Println("Append 3 : " + str3[i-1] + " 코스닥 매도")
 			}
 		}
 	}
@@ -467,7 +467,7 @@ func stockDiscussionMonthly(url, tmpDate string) error {
 
 	for i, s := range tmp {
 		for j := 0; j < len(s); j++ {
-			if s[j].buyType == "" || j < 2 {
+			if s[j].buyType == "" {
 				continue
 			} else {
 
