@@ -10,11 +10,9 @@
 
 ## Used
 
-<center>
  ![Postgresql](https://img.shields.io/badge/-Postgresql-336791?logo=Postgresql)
  ![Go](https://img.shields.io/badge/-Go-00ADD8?logo=GO)
  ![CSS](https://img.shields.io/badge/-CSS-1572B6?logo=CSS3)
- </center>
 
 ## Dependencies
 ```go
