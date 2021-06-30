@@ -19,7 +19,7 @@ func DbConn() (*sql.DB, error) {
 		dbName string = os.Getenv("DB_NAME_dev")
 	)
 
-	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable sslmode=disable", dbHost, dbPort, dbUserName, dbPassword, dbName)
+	dbinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUserName, dbPassword, dbName)
 
 	return sql.Open("postgres", dbinfo)
 

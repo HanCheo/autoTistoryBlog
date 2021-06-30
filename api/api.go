@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,6 +19,11 @@ type ContentsStock struct {
 	CostVolume  string
 	CountVolume string
 	OneStock    string
+}
+
+type ContinueStock struct {
+	StockName string
+	Days      string
 }
 
 //GetAccessToken 티스토리 접근 토큰 발급
@@ -178,14 +184,18 @@ func GetTopDataMonthly(table, buyType, order, tmpDate string, db *sql.DB) Conten
 
 //GetContinueBuy 연속 매수한 종목 가져오기 (예정)
 func GetContinueBuy(market, buyType, order string, db *sql.DB) {
-	// var sql string
+	var sql string
 
-	// sql = "select stockname, " + buyType + " from daily.buy_continue_day where ABS(" + buyType + ") > 3 order by " + buyType
-	// rows, err := db.Query(sql)
-	// common.CheckErr(err)
+	sql = "select stockname, " + buyType + " from daily.buy_continue_day where ABS(" + buyType + ") > 3 order by " + buyType + " " + order
+	rows, err := db.Query(sql)
+	common.CheckErr(err)
 
-	// for rows.Next() {
-	// 	rows.Scan()
-	// }
-
+	var row ContinueStock
+	count := 0
+	for rows.Next() {
+		count++
+		rows.Scan(&row.StockName, &row.Days)
+		fmt.Println(row)
+	}
+	fmt.Println(count)
 }
