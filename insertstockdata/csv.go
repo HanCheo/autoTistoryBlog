@@ -59,14 +59,17 @@ func CodeNameCsv() {
 	db, err := conn.DbConn()
 	common.CheckErr(err)
 
-	for _, data := range insertDatas {
+	for i, data := range insertDatas {
 		sql := "insert into daily.code_name(code, stockname) values "
 		sql += "('" + data.code + "', upper('" + data.stockname + "')),"
 		sql = sql[:len(sql)-1]
-		sql += " on conflict (code) Do update set stockname = upper('" + data.stockname + "');"
+		sql += " on conflict (code) Do update set stockname = upper('" + data.stockname + "') where daily.code_name.stockname != upper('" + data.stockname + "');"
 		_, err = db.Exec(sql)
 		if err != nil {
 			fmt.Println(data.stockname, err)
+		}
+		if i%100 == 0 {
+			fmt.Println(i, " / ", len(insertDatas))
 		}
 	}
 	fmt.Printf("%d 건 데이터 입력완료", len(insertDatas))
@@ -151,8 +154,8 @@ func insertStockCostDataCsv(fileName, dateType string, db *sql.DB) {
 	}
 
 	if count > 0 {
-		res, err := db.Exec("Delete from " + table + "_craw where crawdate = '" + datas[0].crawDate + "';")
-		fmt.Println(datas[0].crawDate+"날짜 데이터가 존재합니다. row를 삭제후 재입력 합니다. \r\n삭제수 :", res)
+		res, err := db.Exec("Delete from " + table + "_craw where crawdate = '" + datas[0].crawDate + "' and stocktype = " + datas[0].stockType + ";")
+		fmt.Println(datas[0].crawDate+"날짜 데이터가 존재합니다. "+fileName+" row를 삭제후 재입력 합니다. \r\n삭제수 :", res)
 		if err != nil {
 			fmt.Println(err)
 		}
