@@ -1,4 +1,4 @@
-# Tistory Auto Wrait
+# Tistory Auto Write
 
 결과 : https://hanch.tistory.com/
 
